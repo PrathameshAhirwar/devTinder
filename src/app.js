@@ -1,24 +1,24 @@
 const express = require("express")
 const app = express()
 const connectDB = require('./config/database')
-const User = require("./models/user")
+const cookieParser = require("cookie-parser")
+const authRouter = require('./Routes/auth')
+const profileRouter = require('./Routes/profile')
+const requestRouter = require('./Routes/request')
+
+
 const PORT = 3000
 
-app.post("/signup", async (req,res)=>{
-    const user = new User({
-        firstName:"Rutuja",
-        lastName:"Zade",
-        email:"rZade@gmail.com",
-        password:"rutu123"
-    })
+app.use(express.json())
+app.use(cookieParser())
 
-    try{
-        await user.save()
-        res.send("User created succesfully")
-    } catch (err){
-        res.status(400).send('Unable to create user :' + err.message)
-    }
-})
+app.use('/',authRouter)
+app.use('/',profileRouter)
+app.use('/',requestRouter)
+
+
+
+
 
 connectDB().then(()=>{
     console.log("Connected to MongoDB")
